@@ -1,0 +1,106 @@
+{
+	"name": "DF_Customer_Purchase",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_Storage_demobitsadlsgen2_PurchaseOrder",
+						"type": "DatasetReference"
+					},
+					"name": "PurchaseOrder"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_Storage_demobitsadlsgen2_OLTP_Customer",
+						"type": "DatasetReference"
+					},
+					"name": "Customer"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_Storage_demobitsadlsgen2_CustomerPurchases",
+						"type": "DatasetReference"
+					},
+					"name": "Output",
+					"rejectedDataLinkedService": {
+						"referenceName": "AzureDataLakeStorage1linkedservice",
+						"type": "LinkedServiceReference"
+					}
+				}
+			],
+			"transformations": [
+				{
+					"name": "PurchaswOrderProjected"
+				},
+				{
+					"name": "CustomerProjected"
+				},
+				{
+					"name": "DataQuality"
+				},
+				{
+					"name": "JoinedStream"
+				},
+				{
+					"name": "CustomerPurchases"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          PurchaseOrderID as short,",
+				"          CustomerCode as short,",
+				"          ProductCode as short,",
+				"          EmployeeCode as boolean,",
+				"          PurchaseOrderDate as date,",
+				"          Quantity as short,",
+				"          UnitPrice as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> PurchaseOrder",
+				"source(output(",
+				"          CustomerCode as short,",
+				"          CustomerName as string,",
+				"          Adress as string,",
+				"          PhoneNumber as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> Customer",
+				"PurchaseOrder select(mapColumn(",
+				"          CustomerCode,",
+				"          Quantity",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> PurchaswOrderProjected",
+				"Customer select(skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> CustomerProjected",
+				"PurchaswOrderProjected filter(greater(Quantity, 0)) ~> DataQuality",
+				"DataQuality, CustomerProjected join(PurchaswOrderProjected@CustomerCode == CustomerProjected@CustomerCode,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> JoinedStream",
+				"JoinedStream aggregate(groupBy(CustomerProjected@CustomerCode,",
+				"          CustomerName),",
+				"     ProductPurchase = sum(Quantity)) ~> CustomerPurchases",
+				"CustomerPurchases sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          CustomerCode,",
+				"          CustomerName,",
+				"          ProductPurchase",
+				"     )) ~> Output"
+			]
+		}
+	}
+}

@@ -1,0 +1,22 @@
+{
+	"name": "Financial_source",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1linkedservice",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "Financialdata",
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "financials.xlsx",
+				"fileSystem": "container2"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

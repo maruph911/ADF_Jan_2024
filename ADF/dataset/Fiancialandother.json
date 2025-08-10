@@ -1,0 +1,33 @@
+{
+	"name": "Fiancialandother",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1linkedservice",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"datasetparmeter": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": {
+				"value": "@dataset().datasetparmeter",
+				"type": "Expression"
+			},
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().datasetparmeter",
+					"type": "Expression"
+				},
+				"folderPath": "Source",
+				"fileSystem": "container2"
+			}
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
