@@ -1,0 +1,45 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "1azuredatafactory101"
+		},
+		"AzureDataLakeStorage1linkedservice_accountKey": {
+			"value": ""
+		},
+		"LS_SQL_SourceDB_password": {
+			"value": ""
+		},
+		"LS_SQL_TargetDB_password": {
+			"value": ""
+		},
+		"AzureDataLakeStorage1linkedservice_properties_typeProperties_url": {
+			"value": "https://azuredemorajvan2.dfs.core.windows.net/"
+		},
+		"LS_SQL_SourceDB_properties_typeProperties_server": {
+			"value": "demobitsss.database.windows.net"
+		},
+		"LS_SQL_SourceDB_properties_typeProperties_database": {
+			"value": "customerdb"
+		},
+		"LS_SQL_SourceDB_properties_typeProperties_userName": {
+			"value": "sqladmin"
+		},
+		"LS_SQL_TargetDB_properties_typeProperties_server": {
+			"value": "azuresqldatabasemaruph.database.windows.net"
+		},
+		"LS_SQL_TargetDB_properties_typeProperties_database": {
+			"value": "scmdb"
+		},
+		"LS_SQL_TargetDB_properties_typeProperties_userName": {
+			"value": "azuresqlmaruph"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}
