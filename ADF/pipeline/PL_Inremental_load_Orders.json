@@ -1,6 +1,7 @@
 {
 	"name": "PL_Inremental_load_Orders",
 	"properties": {
+		"description": "This pipeline is use to incrementally load data from source to Target",
 		"activities": [
 			{
 				"name": "LKP_OldwaterMarkValue",
