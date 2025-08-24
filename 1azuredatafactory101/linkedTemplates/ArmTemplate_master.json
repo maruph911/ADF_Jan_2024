@@ -11,6 +11,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1linkedservice'"
 		},
+		"CosmosDbNoSql_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'CosmosDbNoSql'"
+		},
 		"LS_SQL_SourceDB_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'LS_SQL_SourceDB'"
@@ -76,6 +80,9 @@
 					},
 					"AzureDataLakeStorage1linkedservice_accountKey": {
 						"value": "[parameters('AzureDataLakeStorage1linkedservice_accountKey')]"
+					},
+					"CosmosDbNoSql_connectionString": {
+						"value": "[parameters('CosmosDbNoSql_connectionString')]"
 					},
 					"LS_SQL_SourceDB_password": {
 						"value": "[parameters('LS_SQL_SourceDB_password')]"

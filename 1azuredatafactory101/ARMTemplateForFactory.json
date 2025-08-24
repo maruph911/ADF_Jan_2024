@@ -11,6 +11,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1linkedservice'"
 		},
+		"CosmosDbNoSql_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'CosmosDbNoSql'"
+		},
 		"LS_SQL_SourceDB_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'LS_SQL_SourceDB'"
@@ -210,6 +214,136 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/Fiancialandother')]",
 				"[concat(variables('factoryId'), '/datasets/financial_target')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PL_CosmosDB_insert_order')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy orders",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "CosmosDbSqlApiSink",
+								"writeBehavior": "insert"
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "PurchaseOrderID",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['PurchaseOrderID']"
+										}
+									},
+									{
+										"source": {
+											"name": "CustomerCode",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['CustomerCode']"
+										}
+									},
+									{
+										"source": {
+											"name": "ProductCode",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['ProductCode']"
+										}
+									},
+									{
+										"source": {
+											"name": "EmployeeCode",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['EmployeeCode']"
+										}
+									},
+									{
+										"source": {
+											"name": "PurchaseOrderDate",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['PurchaseOrderDate']"
+										}
+									},
+									{
+										"source": {
+											"name": "Quantity",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['Quantity']"
+										}
+									},
+									{
+										"source": {
+											"name": "UnitPrice",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['UnitPrice']"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "DS_Storage_demobitsadlsgen2_PurchaseOrder",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DS_CosmosDb",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_Storage_demobitsadlsgen2_PurchaseOrder')]",
+				"[concat(variables('factoryId'), '/datasets/DS_CosmosDb')]"
 			]
 		},
 		{
@@ -728,6 +862,26 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/DS_CosmosDb')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "CosmosDbNoSql",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "CosmosDbSqlApiCollection",
+				"schema": {},
+				"typeProperties": {
+					"collectionName": "orders"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/CosmosDbNoSql')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DS_SQL_SourceDB_DynamicTable')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1190,6 +1344,19 @@
 						"type": "SecureString",
 						"value": "[parameters('AzureDataLakeStorage1linkedservice_accountKey')]"
 					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CosmosDbNoSql')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "CosmosDb",
+				"typeProperties": {
+					"connectionString": "[parameters('CosmosDbNoSql_connectionString')]"
 				}
 			},
 			"dependsOn": []

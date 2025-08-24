@@ -8,6 +8,9 @@
 		"AzureDataLakeStorage1linkedservice_accountKey": {
 			"value": ""
 		},
+		"CosmosDbNoSql_connectionString": {
+			"value": ""
+		},
 		"LS_SQL_SourceDB_password": {
 			"value": ""
 		},
